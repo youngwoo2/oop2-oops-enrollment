@@ -7,7 +7,6 @@ public enum Status {
     DROPPING_OUT("자퇴"),
     EXPELLED("제적");
 
-
     private final String status;
 
     Status(String status) {
