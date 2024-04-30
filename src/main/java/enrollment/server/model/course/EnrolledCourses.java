@@ -1,7 +1,5 @@
 package enrollment.server.model.course;
 
-import enrollment.server.model.course.Course;
-
 import java.util.List;
 import java.util.Map;
 
