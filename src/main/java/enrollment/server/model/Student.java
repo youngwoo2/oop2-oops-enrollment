@@ -52,4 +52,8 @@ public class Student {
 
         return false;
     }
+
+    public boolean checkMajor(Course course) {
+        return major == course.getMajor();
+    }
 }
