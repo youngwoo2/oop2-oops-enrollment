@@ -1,12 +1,11 @@
-package enrollment.server.model;
+package enrollment.server.model.student;
 
 import enrollment.server.constants.Enrollment;
 import enrollment.server.constants.Major;
 import enrollment.server.constants.Status;
 import enrollment.server.model.course.Course;
+import enrollment.server.model.course.Courses;
 import enrollment.server.model.course.EnrolledCourses;
-import enrollment.server.model.course.Prerequisite;
-
 import java.util.List;
 
 public class Student {
@@ -27,20 +26,20 @@ public class Student {
         this.status = status;
     }
 
-    public boolean checkCurrentCredits(int courseCredit) {
-        return (Enrollment.MAX_CREDITS.getValue() - currentCredits - courseCredit) >= 0;
+    public boolean checkCurrentCredits(Course course) {
+        return (Enrollment.MAX_CREDITS.getValue() - currentCredits - course.getCredit()) >= 0;
     }
 
     public boolean checkPrerequisite(Course course) {
         List<Integer> prerequisite = course.getPrerequisite().getPrerequisite();
         int count = 0;
 
-        if (prerequisite.size() == 0) {
+        if (prerequisite.isEmpty()) {
             return true;
         }
 
-        for (List<Course> value : enrolledCourses.getEnrolledCourses().values()) {
-            for (Course enrolledCourse : value) {
+        for (Courses value : enrolledCourses.getEnrolledCourses().values()) {
+            for (Course enrolledCourse : value.getCourses()) {
                 if (prerequisite.contains(enrolledCourse.getId())) {
                     count++;
 
@@ -62,11 +61,23 @@ public class Student {
         return id;
     }
 
+    public int getCurrentCredits() {
+        return currentCredits;
+    }
+
     public String getName() {
         return name;
     }
 
     public EnrolledCourses getEnrolledCourses() {
         return enrolledCourses;
+    }
+
+    public Major getMajor() {
+        return major;
+    }
+
+    public Status getStatus() {
+        return status;
     }
 }

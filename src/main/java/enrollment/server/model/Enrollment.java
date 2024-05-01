@@ -5,53 +5,78 @@ import enrollment.server.constants.Status;
 import enrollment.server.model.course.Course;
 import enrollment.server.model.course.EnrolledCourses;
 import enrollment.server.model.course.Prerequisite;
-
+import enrollment.server.constants.Period;
+import enrollment.server.model.course.Courses;
+import enrollment.server.model.student.Student;
+import enrollment.server.model.student.Students;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class Enrollment {
+    private Students students; // 컬렉션 변경 가능
+    private Courses courses;
 
-//        private static List<Student> students = Arrays.asList(
-//                new Student(202200001, 6, "홍길동", new EnrolledCourses(new HashMap<>() {{
-//                    put("2024-1", Arrays.asList(
-//                            new Course(101, 30, 3, "프로그래밍 기초", "배수지", new Prerequisite(List.of()), Major.COMPUTER, 25),
-//                            new Course(102, 30, 3, "자료구조", "김민정", new Prerequisite(List.of()), Major.COMPUTER, 20)
-//
-//                    ));
-//                }}), Major.COMPUTER, Status.ENROLLED),
-//                new Student(202200002, 6, "김동현", new EnrolledCourses(new HashMap<>() {{
-//                    put("2024-1", Arrays.asList(
-//                            new Course(101, 30, 3, "프로그래밍 기초", "배수지", new Prerequisite(List.of()), Major.COMPUTER, 25),
-//                            new Course(102, 30, 3, "자료구조", "김민정", new Prerequisite(List.of()), Major.COMPUTER, 20)
-//
-//                    ));
-//                }}), Major.COMPUTER, Status.ENROLLED)
-//
-//        );
+    public Enrollment(Students students, Courses courses) {
+        this.students = students;
+        this.courses = courses;
+    }
+
+    public void register(int studentId, int courseId) {
+        Student student = students.getStudent(studentId);
+        Course course = courses.getCourse(courseId);
+
+        if (!Period.check()) {
+            throw new IllegalArgumentException("수강신청기간이 아닙니다.");
+        }
+        if (!student.checkCurrentCredits(course)) {
+            throw new IllegalArgumentException("수강 가능한 학점을 초과했습니다.");
+        }
+        if (!student.checkMajor(course)) {
+            throw new IllegalArgumentException("해당 전공이 아닙니다.");
+        }
+        if (!student.checkPrerequisite(course)) {
+            throw new IllegalArgumentException("선수과목이 존재합니다.");
+        }
+        if (!course.checkCapacity()) {
+            throw new IllegalArgumentException("정원을 초과했습니다.");
+        }
+
+        student.getEnrolledCourses().getEnrolledCourses().putIfAbsent(getCurrentSemester(), new Courses(new ArrayList<>()));
+        student.getEnrolledCourses().getEnrolledCourses().get(getCurrentSemester()).getCourses().add(course);
+    }
+
+    public String getCurrentSemester() {
+        StringBuilder sb = new StringBuilder();
+        LocalDateTime current = LocalDateTime.now();
+        sb.append(current.getYear()).append("-").append(current.getMonthValue() / 8 + 1);
+
+        return sb.toString();
+    }
+
+
+    // ---------------------------------------------------------------------------
 
     // Arrays.asList()는 수정이 안되서 ArrayList 로 바꿨습니다.
-    private static List<Student> students = new ArrayList<>(Arrays.asList(
+    private static List<Student> studentsTest = new ArrayList<>(Arrays.asList(
             new Student(202200001, 6, "홍길동", new EnrolledCourses(new HashMap<>() {{
-                put("2024-1", new ArrayList<>(Arrays.asList(
+                put("2024-1", new Courses(new ArrayList<>(Arrays.asList(
                         new Course(101, 30, 3, "프로그래밍 기초", "배수지", new Prerequisite(List.of()), Major.COMPUTER, 25),
                         new Course(102, 30, 3, "자료구조", "김민정", new Prerequisite(List.of()), Major.COMPUTER, 20)
-                )));
+                ))));
             }}), Major.COMPUTER, Status.ENROLLED),
             new Student(202200002, 6, "김동현", new EnrolledCourses(new HashMap<>() {{
-                put("2024-1", new ArrayList<>(Arrays.asList(
+                put("2024-1", new Courses(new ArrayList<>(Arrays.asList(
                         new Course(101, 30, 3, "프로그래밍 기초", "배수지", new Prerequisite(List.of()), Major.COMPUTER, 25),
                         new Course(102, 30, 3, "자료구조", "김민정", new Prerequisite(List.of()), Major.COMPUTER, 20)
-                )));
+                ))));
             }}), Major.COMPUTER, Status.ENROLLED)
     ));
-
-
-
 
 
     // 학번 검증 로직 (입력된 id(학번)과 저장된 정보의 id와 일치하는지 찾는 메소드)
 
     public static Student checkStudentId(int studentId) {
-        for (Student student : students) {
+        for (Student student : studentsTest) {
             if (student.getId() == studentId) {
                 return student;
             }
@@ -84,7 +109,7 @@ public class Enrollment {
 
                 if (validStudent == null) {
                     System.out.println("유효하지 않은 학번입니다.");
-                     // 유효하지 않은 학번일 경우 로그인 처음으로 이동
+                    // 유효하지 않은 학번일 경우 로그인 처음으로 이동
                 } else {
                     System.out.println(validStudent.getName() + "님 수강신청을 시작하세요.");
                     break; // 유효한 학번이면 로그인 프로세스 종료
@@ -146,20 +171,19 @@ public class Enrollment {
     }
 
 
-
     // 수강철회
     public static void withdrawal(Scanner scanner, Student student) {
 
         // 특정 학기의 과목 목록에 접근 ( 현재 2024-1 수강신청이라서 2024-1목록만 조회 )
         //    수강신청과목출력
-        List<Course> coursesForTerm = student.getEnrolledCourses().getEnrolledCourses().get("2024-1");
-        if (coursesForTerm == null || coursesForTerm.isEmpty()) {
+        Courses coursesForTerm = student.getEnrolledCourses().getEnrolledCourses().get("2024-1");
+        if (coursesForTerm == null || coursesForTerm.getCourses().isEmpty()) {
             System.out.println("2024-1 학기에 등록된 과목이 없습니다.");
             return;
         }
 
         System.out.println(student.getName() + "님의 2024-1 학기 수강 중인 과목 목록:");
-        for (Course course : coursesForTerm) {
+        for (Course course : coursesForTerm.getCourses()) {
             System.out.printf("과목 코드: %d, 과목명: %s\n", course.getId(), course.getName());
         }
 
@@ -180,7 +204,7 @@ public class Enrollment {
         }
 
         boolean found = false;
-        Iterator<Course> iterator = coursesForTerm.iterator();
+        Iterator<Course> iterator = coursesForTerm.getCourses().iterator();
         while (iterator.hasNext()) {
             Course course = iterator.next();
             if (course.getId() == courseId) {
@@ -195,28 +219,28 @@ public class Enrollment {
         if (!found) {
             System.out.println("해당 과목 코드가 수강 목록에 없습니다.");
             System.out.println("과목 코드를 다시 입력해주세요");
-                withdrawal(scanner, student); // 다시 철회 시도 // while문으로 감싸려니 student오류남
+            withdrawal(scanner, student); // 다시 철회 시도 // while문으로 감싸려니 student오류남
         }
         //    메모리에 저장해야되는데 일단은 철회 되었는지 확인
         System.out.println(student.getName() + "님의 2024-1 학기 수강 신청한 과목 목록:");
-        for (Course course : coursesForTerm) {
+        for (Course course : coursesForTerm.getCourses()) {
             System.out.printf("과목 코드: %d, 과목명: %s\n", course.getId(), course.getName());
         }
     }
 
     //    수강신청과목조회과정
-    public static void enrollmentConfirm(Scanner scanner, Student student){
+    public static void enrollmentConfirm(Scanner scanner, Student student) {
 
         //    수강신청기간 체크 (생략)
         //    수강신청과목출력
-        List<Course> coursesForTerm = student.getEnrolledCourses().getEnrolledCourses().get("2024-1");
-        if (coursesForTerm == null || coursesForTerm.isEmpty()) {
+        Courses coursesForTerm = student.getEnrolledCourses().getEnrolledCourses().get("2024-1");
+        if (coursesForTerm == null || coursesForTerm.getCourses().isEmpty()) {
             System.out.println("2024-1 학기에 등록된 과목이 없습니다.");
             return;
         }
 
         System.out.println(student.getName() + "님의 2024-1 학기 수강 신청한 과목 목록:");
-        for (Course course : coursesForTerm) {
+        for (Course course : coursesForTerm.getCourses()) {
             System.out.printf("과목 코드: %d, 과목명: %s\n", course.getId(), course.getName());
         }
         //    조회되었습니다 종료하려면 q를 입력해주세요 출력
@@ -226,4 +250,13 @@ public class Enrollment {
             return;
         }
     }
+
+    public Students getStudents() {
+        return students;
+    }
+
+    public Courses getCourses() {
+        return courses;
+    }
 }
+
