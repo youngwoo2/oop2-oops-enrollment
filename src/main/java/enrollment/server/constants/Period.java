@@ -46,6 +46,4 @@ public enum Period {
 
         return true;
     }
-
-
 }
