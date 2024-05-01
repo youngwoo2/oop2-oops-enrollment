@@ -57,4 +57,8 @@ public class Course {
     public int getCurrentCapacity() {
         return currentCapacity;
     }
+
+    public boolean checkCapacity() {
+        return capacity-currentCapacity>0;
+    }
 }
