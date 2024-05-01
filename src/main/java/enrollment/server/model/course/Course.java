@@ -25,4 +25,36 @@ public class Course {
         this.major = major;
         this.currentCapacity = currentCapacity;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public int getCredit() {
+        return credit;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getProfessor() {
+        return professor;
+    }
+
+    public Prerequisite getPrerequisite() {
+        return prerequisite;
+    }
+
+    public Major getMajor() {
+        return major;
+    }
+
+    public int getCurrentCapacity() {
+        return currentCapacity;
+    }
 }
