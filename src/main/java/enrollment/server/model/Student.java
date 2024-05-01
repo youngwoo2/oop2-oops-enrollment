@@ -3,7 +3,10 @@ package enrollment.server.model;
 import enrollment.server.constants.Enrollment;
 import enrollment.server.constants.Major;
 import enrollment.server.constants.Status;
+import enrollment.server.model.course.Course;
 import enrollment.server.model.course.EnrolledCourses;
+import enrollment.server.model.course.Prerequisite;
+import java.util.List;
 
 public class Student {
     private final int id; // 학번
@@ -25,5 +28,20 @@ public class Student {
 
     public boolean checkCurrentCredits(int courseCredit) {
         return (Enrollment.MAX_CREDITS.getValue() - currentCredits - courseCredit) >= 0;
+    }
+
+    public boolean checkPrerequisite(Course course) {
+        List<Integer> prerequisite = course.getPrerequisite().getPrerequisite();
+
+        int count =0;
+        for (List<Course> value : enrolledCourses.getEnrolledCourses().values()) {
+            for (Course enrolledCourse : value) {
+                if (prerequisite.contains(enrolledCourse.getId())){
+                    count++;
+                }
+            }
+        }
+
+        return count == prerequisite.size();
     }
 }

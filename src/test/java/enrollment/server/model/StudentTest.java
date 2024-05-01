@@ -39,7 +39,7 @@ public class StudentTest {
         Student student = new Student(1, 0, "변성일", new EnrolledCourses(Map.of("2023-1", List.of(java))), Major.COMPUTER, Status.ENROLLED);
 
         // when, then
-        assertThat(checkPrerequisite(jpa)).isTrue();
-        assertThat(checkPrerequisite(spring)).isFalse();
+        assertThat(student.checkPrerequisite(jpa)).isTrue();
+        assertThat(student.checkPrerequisite(spring)).isFalse();
     }
 }
