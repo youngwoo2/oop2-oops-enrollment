@@ -19,6 +19,6 @@ public class StudentTest {
         Student student = new Student(1, currentCredits, "변성일", new EnrolledCourses(new HashMap<>()), Major.COMPUTER, Status.ENROLLED);
 
         // when, then
-        assertThat(checkCurrentCredits(courseCredit)).isEqulTo(isPossible);
+        assertThat(student.checkCurrentCredits(courseCredit)).isEqualTo(isPossible);
     }
 }

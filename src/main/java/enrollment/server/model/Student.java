@@ -1,5 +1,6 @@
 package enrollment.server.model;
 
+import enrollment.server.constants.Enrollment;
 import enrollment.server.constants.Major;
 import enrollment.server.constants.Status;
 import enrollment.server.model.course.EnrolledCourses;
@@ -12,12 +13,17 @@ public class Student {
     private Major major;
     private Status status; // 학적 상태
 
-    public Student(int id, int currentCredits, String name, EnrolledCourses enrolledCourses, Major major, Status status) {
+    public Student(int id, int currentCredits, String name, EnrolledCourses enrolledCourses, Major major,
+                   Status status) {
         this.id = id;
         this.currentCredits = currentCredits;
         this.name = name;
         this.enrolledCourses = enrolledCourses;
         this.major = major;
         this.status = status;
+    }
+
+    public boolean checkCurrentCredits(int courseCredit) {
+        return (Enrollment.MAX_CREDITS.getValue() - currentCredits - courseCredit) >= 0;
     }
 }
