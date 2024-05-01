@@ -19,10 +19,11 @@ import org.junit.jupiter.params.provider.CsvSource;
 public class StudentTest {
     @DisplayName("수강 가능한 학점 체크")
     @ParameterizedTest
-    @CsvSource(value = {"0,3,true","15,3,true","16,3,false","17,2,false"})
+    @CsvSource(value = {"0,3,true", "15,3,true", "16,3,false", "17,2,false"})
     void checkCurrentCredits(int currentCredits, int courseCredit, boolean isPossible) {
         // given
-        Student student = new Student(1, currentCredits, "변성일", new EnrolledCourses(new HashMap<>()), Major.COMPUTER, Status.ENROLLED);
+        Student student = new Student(1, currentCredits, "변성일", new EnrolledCourses(new HashMap<>()), Major.COMPUTER,
+                Status.ENROLLED);
 
         // when, then
         assertThat(student.checkCurrentCredits(courseCredit)).isEqualTo(isPossible);
@@ -32,14 +33,36 @@ public class StudentTest {
     @Test
     void checkPrerequisite() {
         // given
-        Course java = new Course(101234,25, 3,"자바", "김동현", new Prerequisite(List.of()), Major.COMPUTER,0);
-        Course jpa = new Course(101111,25, 3,"스프링", "김동현", new Prerequisite(List.of(101234)), Major.COMPUTER,0);
-        Course spring = new Course(102222,25, 3,"스프링", "김동현", new Prerequisite(List.of(101111)), Major.COMPUTER,0);
+        Course java = new Course(101234, 25, 3, "자바", "김동현",
+                new Prerequisite(List.of()), Major.COMPUTER, 0);
+        Course jpa = new Course(101111, 25, 3, "스프링", "김동현",
+                new Prerequisite(List.of(101234)), Major.COMPUTER, 0);
+        Course spring = new Course(102222, 25, 3, "스프링", "김동현",
+                new Prerequisite(List.of(101111)), Major.COMPUTER, 0);
 
-        Student student = new Student(1, 0, "변성일", new EnrolledCourses(Map.of("2023-1", List.of(java))), Major.COMPUTER, Status.ENROLLED);
+        Student student = new Student(1, 0, "변성일",
+                new EnrolledCourses(Map.of("2023-1", List.of(java))), Major.COMPUTER,
+                Status.ENROLLED);
 
         // when, then
         assertThat(student.checkPrerequisite(jpa)).isTrue();
         assertThat(student.checkPrerequisite(spring)).isFalse();
+    }
+
+    @DisplayName("전공 체크")
+    @Test
+    void checkMajor() {
+        // given
+        Student student = new Student(1, 0, "변성일",
+                new EnrolledCourses(new HashMap<>()), Major.COMPUTER,
+                Status.ENROLLED);
+        Course java = new Course(101234, 25, 3, "자바", "김동현",
+                new Prerequisite(List.of()), Major.COMPUTER, 0);
+        Course english = new Course(201234, 25, 3, "영어", "김민수",
+                new Prerequisite(List.of()), Major.ENGLISH, 0);
+        // when, then
+        assertThat(student.checkMajor(java)).isTrue();
+        assertThat(student.checkMajor(english)).isFalse();
+
     }
 }

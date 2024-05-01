@@ -40,7 +40,7 @@ public class Student {
 
         for (List<Course> value : enrolledCourses.getEnrolledCourses().values()) {
             for (Course enrolledCourse : value) {
-                if (prerequisite.contains(enrolledCourse.getId())){
+                if (prerequisite.contains(enrolledCourse.getId())) {
                     count++;
 
                     if (count == prerequisite.size()) {
@@ -48,8 +48,6 @@ public class Student {
                     }
                 }
             }
-
-
         }
 
         return false;
