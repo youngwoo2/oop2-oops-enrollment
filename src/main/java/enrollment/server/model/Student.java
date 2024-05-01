@@ -32,16 +32,26 @@ public class Student {
 
     public boolean checkPrerequisite(Course course) {
         List<Integer> prerequisite = course.getPrerequisite().getPrerequisite();
-
         int count =0;
+
+        if (prerequisite.size() == 0) {
+            return true;
+        }
+
         for (List<Course> value : enrolledCourses.getEnrolledCourses().values()) {
             for (Course enrolledCourse : value) {
                 if (prerequisite.contains(enrolledCourse.getId())){
                     count++;
+
+                    if (count == prerequisite.size()) {
+                        return true;
+                    }
                 }
             }
+
+
         }
 
-        return count == prerequisite.size();
+        return false;
     }
 }
