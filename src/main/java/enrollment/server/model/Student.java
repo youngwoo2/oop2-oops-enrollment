@@ -12,6 +12,12 @@ public class Student {
     private Major major;
     private Status status; // 학적 상태
 
-
-
+    public Student(int id, int totalCredits, String name, EnrolledCourses enrolledCourses, Major major, Status status) {
+        this.id = id;
+        this.totalCredits = totalCredits;
+        this.name = name;
+        this.enrolledCourses = enrolledCourses;
+        this.major = major;
+        this.status = status;
+    }
 }
