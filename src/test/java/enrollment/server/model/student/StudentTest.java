@@ -1,13 +1,14 @@
-package enrollment.server.model;
+package enrollment.server.model.student;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import enrollment.server.constants.Major;
 import enrollment.server.constants.Status;
 import enrollment.server.model.course.Course;
+import enrollment.server.model.course.Courses;
 import enrollment.server.model.course.EnrolledCourses;
 import enrollment.server.model.course.Prerequisite;
+import enrollment.server.model.student.Student;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,9 +25,11 @@ public class StudentTest {
         // given
         Student student = new Student(1, currentCredits, "변성일", new EnrolledCourses(new HashMap<>()), Major.COMPUTER,
                 Status.ENROLLED);
+        Course course = new Course(101234, 25, courseCredit, "자바", "김동현",
+                new Prerequisite(List.of()), Major.COMPUTER, 0);
 
         // when, then
-        assertThat(student.checkCurrentCredits(courseCredit)).isEqualTo(isPossible);
+        assertThat(student.checkCurrentCredits(course)).isEqualTo(isPossible);
     }
 
     @DisplayName("선수과목 체크")
@@ -41,7 +44,7 @@ public class StudentTest {
                 new Prerequisite(List.of(101111)), Major.COMPUTER, 0);
 
         Student student = new Student(1, 0, "변성일",
-                new EnrolledCourses(Map.of("2023-1", List.of(java))), Major.COMPUTER,
+                new EnrolledCourses(Map.of("2023-1", new Courses(List.of(java)))), Major.COMPUTER,
                 Status.ENROLLED);
 
         // when, then

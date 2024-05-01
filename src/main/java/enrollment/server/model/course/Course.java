@@ -4,7 +4,7 @@ import enrollment.server.constants.Major;
 
 public class Course {
     // Class -> Course , 수업을 칭할 때 Course 사용이 보편적
-    // private final int id;
+    private final int id;
     private int capacity; // 증원가능성이 있으니 final로 하지 않았음
     private int credit; // 수업의 학점
     private String name;
