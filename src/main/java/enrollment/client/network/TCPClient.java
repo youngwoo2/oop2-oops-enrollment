@@ -40,9 +40,14 @@ public class TCPClient {
         }
     }
 
-    public void terminate()throws IOException{
-        this.reader.close();
-        this.writer.close();
+    public void terminate(){
+        try {
+            this.reader.close();
+            this.writer.close();
+        }catch (IOException e){
+            e.printStackTrace();
+            System.out.println("TCP 연결 해제 실패");
+        }
         System.out.println("버퍼 해제 완료.");
     }
 
