@@ -6,6 +6,7 @@ import enrollment.server.constants.Status;
 import enrollment.server.model.course.Course;
 import enrollment.server.model.course.EnrolledCourses;
 import enrollment.server.model.course.Prerequisite;
+
 import java.util.List;
 
 public class Student {
@@ -32,7 +33,7 @@ public class Student {
 
     public boolean checkPrerequisite(Course course) {
         List<Integer> prerequisite = course.getPrerequisite().getPrerequisite();
-        int count =0;
+        int count = 0;
 
         if (prerequisite.size() == 0) {
             return true;
@@ -55,5 +56,17 @@ public class Student {
 
     public boolean checkMajor(Course course) {
         return major == course.getMajor();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public EnrolledCourses getEnrolledCourses() {
+        return enrolledCourses;
     }
 }
