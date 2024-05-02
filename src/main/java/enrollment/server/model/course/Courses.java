@@ -1,8 +1,9 @@
 package enrollment.server.model.course;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Courses {
+public class Courses implements Serializable {
     private final List<Course> courses;
 
     public Courses(List<Course> courses) {
