@@ -1,7 +1,7 @@
 package enrollment.client.view;
 
 public class OutputView {
-    public static String makeLISTUPmsg(int studentID){
+    public static String makeLISTUPmsg(){
         return "LISTUP/\n";
     }
     public static String makeAPPLYmsg(int courseCode){
