@@ -76,4 +76,8 @@ public class Controller {
         return receivedMsg.toString();
     }
 
+    private void printCourses(String[] courses){
+
+    }
+
 }
