@@ -1,8 +1,9 @@
 package enrollment.server.model.student;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Students {
+public class Students implements Serializable {
     private final List<Student> students;
 
     public Students(List<Student> students) {

@@ -2,8 +2,9 @@ package enrollment.server.model.course;
 
 import enrollment.server.constants.Major;
 
-public class Course {
-    // Class -> Course , 수업을 칭할 때 Course 사용이 보편적
+import java.io.Serializable;
+
+public class Course implements Serializable {
     private final int id;
     private int capacity; // 증원가능성이 있으니 final로 하지 않았음
     private int credit; // 수업의 학점
@@ -60,5 +61,9 @@ public class Course {
 
     public boolean checkCapacity() {
         return capacity-currentCapacity>0;
+    }
+
+    public void increaseCurrentCapacity() {
+        this.currentCapacity++;
     }
 }

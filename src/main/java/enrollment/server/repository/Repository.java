@@ -8,19 +8,19 @@ import enrollment.server.model.course.EnrolledCourses;
 import enrollment.server.model.course.Prerequisite;
 import enrollment.server.model.student.Student;
 import enrollment.server.model.student.Students;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class Repository {
+public class Repository implements Serializable{
+    public Repository() {
+        write("Students",createStudents());
+        write("Courses",createCourses());
+    }
 
-    private Students studentsList;
-    private Courses coursesList;
-
-    public void createStudents() {
+    public Students createStudents() {
         List<Student> students = new ArrayList<>(Arrays.asList(
                 new Student(22001, 6, "홍길동", new EnrolledCourses(new HashMap<>() {
                     {
@@ -43,10 +43,11 @@ public class Repository {
                             ))));
                 }}), Major.COMPUTER, Status.ENROLLED)
         ));
-        studentsList = new Students(students);
+
+        return new Students(students);
     }
 
-    public void createCourses() {
+    public Courses createCourses() {
         List<Course> courses = new ArrayList<>(Arrays.asList(
                 new Course(1101, 30, 3, "프로그래밍 기초", "배수지", new Prerequisite(List.of()), Major.COMPUTER, 25),
                 new Course(1101, 30, 3, "프로그래밍 기초", "배수지", new Prerequisite(List.of()), Major.COMPUTER, 25),
@@ -58,50 +59,49 @@ public class Repository {
                 new Course(1101, 30, 3, "프로그래밍 기초", "배수지", new Prerequisite(List.of()), Major.COMPUTER, 25),
                 new Course(1101, 30, 3, "프로그래밍 기초", "배수지", new Prerequisite(List.of()), Major.COMPUTER, 25)
         ));
-        coursesList = new Courses(courses);
+
+        return new Courses(courses);
     }
 
-    public void studentsToFile(Students students) { // 매개변수로 students객체배열을 받는다. Enrollment에서도 이 메소드를 호출할 수 있다.
-        File file = new File("/Users/jeong-yejin/2024SSGI&C/oop2-oops-enrollment/src", "studentslist.ser");
+    public <T> void write(String name, T students) { // 매개변수로 students객체배열을 받는다. Enrollment에서도 이 메소드를 호출할 수 있다.
+        File file = new File("src/main/java/enrollment/server/repository/", name+".ser");
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
-            oos.writeObject(studentsList);
+            oos.writeObject(students);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public Students fileToStudents() {
-        File file = new File("C:\\Workspaces\\oop2-oops-enrollment\\src", "studentslist.ser");
+    public <T> T read(String name) {
+        File file = new File("src/main/java/enrollment/server/repository/", name+".ser");
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
             Object obj = ois.readObject();
-            this.studentsList = (Students) obj;
-            return studentsList;
+            return (T) obj;
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public void coursesToFile(Courses courses) {
-        File file = new File("C:\\Workspaces\\oop2-oops-enrollment\\src", "courseslist.ser");
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
-            oos.writeObject(courses);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    public void coursesToFile(Courses courses) {
+//        File file = new File("src/main/java/enrollment/server/repository/", "courseslist.ser");
+//        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
+//            oos.writeObject(courses);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
-    public Courses fileToCourses() {
-        File file = new File("C:\\Workspaces\\oop2-oops-enrollment\\src", "courseslist.ser");
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-            Object obj = ois.readObject();
-            this.coursesList = (Courses) obj;
-            return coursesList;
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+//    public Courses fileToCourses() {
+//        File file = new File("src/main/java/enrollment/server/repository/", "courseslist.ser");
+//        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+//            Object obj = ois.readObject();
+//            return (Courses) obj;
+//        } catch (IOException | ClassNotFoundException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
 
     // enrollment에서 가져올 학생 정보
 //    public Student findStudent(int id) {
