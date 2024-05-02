@@ -32,7 +32,7 @@ public class Student {
 
     public boolean checkPrerequisite(Course course) {
         List<Integer> prerequisite = course.getPrerequisite().getPrerequisite();
-        int count =0;
+        int count = 0;
 
         if (prerequisite.isEmpty()) {
             return true;
