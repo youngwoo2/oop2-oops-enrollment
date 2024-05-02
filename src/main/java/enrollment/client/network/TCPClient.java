@@ -1,20 +1,18 @@
 package enrollment.client.network;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class TCPClient {
     Socket socket;
-    InputStreamReader reader;
-    OutputStreamWriter writer;
+    BufferedReader reader;
+    BufferedWriter writer;
     public TCPClient(String serverIP, int portNum) {
         try{
             this.socket = new Socket(serverIP, portNum);
-            this.reader = new InputStreamReader(socket.getInputStream());
-            this.writer = new OutputStreamWriter(socket.getOutputStream());
+            this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            this.writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         }catch(IOException e){
             e.printStackTrace();
         }
@@ -32,11 +30,13 @@ public class TCPClient {
     public String receive(){
         //[TODO] 메시지가 도착한 것을 어떻게 확인하고 읽을 것인지.
         try{
-            StringBuffer strBuf = new StringBuffer();
-            strBuf.append(this.reader.read());
-            return strBuf.toString();
+            String msg = this.reader.readLine();
+            while(msg==null) {
+                msg = this.reader.readLine();
+            }
+            return msg;
         }catch(IOException e){
-            return "";
+            return null;
         }
     }
 

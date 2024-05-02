@@ -108,11 +108,7 @@ public class Controller {
 
     // 서버에 요청 전송 후 응답메시지 대기 및 응답메시지 도착시 반환
     private String waitForReply(TCPClient tcpClient){
-        StringBuffer receivedMsg= new StringBuffer();
-        while(receivedMsg.isEmpty()){
-            receivedMsg.append(tcpClient.receive());
-        }
-        return receivedMsg.toString();
+        return tcpClient.receive();
     }
 
     // LISTUP 요청에 대한 응답 출력
