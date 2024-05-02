@@ -82,7 +82,7 @@ public class Repository implements Serializable{
                     }
                 }), Major.FINE_ARTS, Status.ENROLLED),
                 // 성일 - 18학점 초과하여 수강신청하려는 경우
-                new Student(23004, 3, "변성일", new EnrolledCourses(new HashMap<>() {
+                new Student(23004, 18, "변성일", new EnrolledCourses(new HashMap<>() {
                     {
                         put("2024-1", new Courses(new ArrayList<>(Arrays.asList(
                                 new Course(7101, 30, 3, "한국사학", "김재영", new Prerequisite(List.of()), Major.HISTORY, 25),
