@@ -6,9 +6,11 @@ import enrollment.server.constants.Status;
 import enrollment.server.model.course.Course;
 import enrollment.server.model.course.Courses;
 import enrollment.server.model.course.EnrolledCourses;
+
+import java.io.Serializable;
 import java.util.List;
 
-public class Student {
+public class Student implements Serializable {
     private final int id; // 학번
     private int currentCredits; // 현재 수강한 총 학점을 의미, 학점 제한은 18학점으로 통일 - 검증부분에서 거르기
     private String name;
@@ -80,4 +82,9 @@ public class Student {
     public Status getStatus() {
         return status;
     }
+
+    public void increaseCurrentCredits(int credit){
+        this.currentCredits += credit;
+    }
+
 }
