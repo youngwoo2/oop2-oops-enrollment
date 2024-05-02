@@ -9,7 +9,6 @@ import enrollment.server.constants.Period;
 import enrollment.server.model.course.Courses;
 import enrollment.server.model.student.Student;
 import enrollment.server.model.student.Students;
-import enrollment.server.repository.Repository;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -17,8 +16,6 @@ import java.util.*;
 public class Enrollment {
     private Students students; // 컬렉션 변경 가능
     private Courses courses;
-    private Student student;
-    private Course course;
 
     public Enrollment(Students students, Courses courses) {
         this.students = students;
@@ -26,11 +23,8 @@ public class Enrollment {
     }
 
     public void register(int studentId, int courseId) {
-        Repository repository = new Repository();
-        students = repository.fileToStudents();
-        courses = repository.fileToCourses();
-        student = students.getStudent(studentId);
-        course = courses.getCourse(courseId);
+        Student student = students.getStudent(studentId);
+        Course course = courses.getCourse(courseId);
 
         if (!Period.check()) {
             throw new IllegalArgumentException("수강신청기간이 아닙니다.");
@@ -47,6 +41,9 @@ public class Enrollment {
         if (!course.checkCapacity()) {
             throw new IllegalArgumentException("정원을 초과했습니다.");
         }
+
+        course.increaseCurrentCapacity();
+        student.increaseCurrentCredits(course.getCredit());
 
         student.getEnrolledCourses().getEnrolledCourses().putIfAbsent(getCurrentSemester(), new Courses(new ArrayList<>()));
         student.getEnrolledCourses().getEnrolledCourses().get(getCurrentSemester()).getCourses().add(course);
@@ -74,9 +71,9 @@ public class Enrollment {
             new Student(202200002, 6, "김동현", new EnrolledCourses(new HashMap<>() {{
                 put("2024-1",
                         new Courses(new ArrayList<>(Arrays.asList(
-                        new Course(101, 30, 3, "프로그래밍 기초", "배수지", new Prerequisite(List.of()), Major.COMPUTER, 25),
-                        new Course(102, 30, 3, "자료구조", "김민정", new Prerequisite(List.of()), Major.COMPUTER, 20)
-                ))));
+                                new Course(101, 30, 3, "프로그래밍 기초", "배수지", new Prerequisite(List.of()), Major.COMPUTER, 25),
+                                new Course(102, 30, 3, "자료구조", "김민정", new Prerequisite(List.of()), Major.COMPUTER, 20)
+                        ))));
             }}), Major.COMPUTER, Status.ENROLLED)
     ));
 
