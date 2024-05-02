@@ -9,12 +9,16 @@ import enrollment.server.constants.Period;
 import enrollment.server.model.course.Courses;
 import enrollment.server.model.student.Student;
 import enrollment.server.model.student.Students;
+import enrollment.server.repository.Repository;
+
 import java.time.LocalDateTime;
 import java.util.*;
 
 public class Enrollment {
     private Students students; // 컬렉션 변경 가능
     private Courses courses;
+    private Student student;
+    private Course course;
 
     public Enrollment(Students students, Courses courses) {
         this.students = students;
@@ -22,8 +26,11 @@ public class Enrollment {
     }
 
     public void register(int studentId, int courseId) {
-        Student student = students.getStudent(studentId);
-        Course course = courses.getCourse(courseId);
+        Repository repository = new Repository();
+        students = repository.fileToStudents();
+        courses = repository.fileToCourses();
+        student = students.getStudent(studentId);
+        course = courses.getCourse(courseId);
 
         if (!Period.check()) {
             throw new IllegalArgumentException("수강신청기간이 아닙니다.");
@@ -65,13 +72,13 @@ public class Enrollment {
                 ))));
             }}), Major.COMPUTER, Status.ENROLLED),
             new Student(202200002, 6, "김동현", new EnrolledCourses(new HashMap<>() {{
-                put("2024-1", new Courses(new ArrayList<>(Arrays.asList(
+                put("2024-1",
+                        new Courses(new ArrayList<>(Arrays.asList(
                         new Course(101, 30, 3, "프로그래밍 기초", "배수지", new Prerequisite(List.of()), Major.COMPUTER, 25),
                         new Course(102, 30, 3, "자료구조", "김민정", new Prerequisite(List.of()), Major.COMPUTER, 20)
                 ))));
             }}), Major.COMPUTER, Status.ENROLLED)
     ));
-
 
     // 학번 검증 로직 (입력된 id(학번)과 저장된 정보의 id와 일치하는지 찾는 메소드)
 
