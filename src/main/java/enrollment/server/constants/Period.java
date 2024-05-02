@@ -3,7 +3,8 @@ package enrollment.server.constants;
 import java.time.LocalDateTime;
 
 public enum Period {
-    ENROLLMENT("02-06~02-10/09~18", 2, 2, 6, 12, 9, 18-1);
+//    ENROLLMENT("02-06~02-10/09~18", 2, 2, 6, 12, 9, 18-1);
+    ENROLLMENT("05-01~05-10/09~24", 5, 5, 1, 10, 9, 24-1);
 
     private final String period;
 
@@ -45,6 +46,4 @@ public enum Period {
 
         return true;
     }
-
-
 }
